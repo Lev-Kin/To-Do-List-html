@@ -223,6 +223,85 @@ files:
     }, 30000)
 
   learner_created: false
+- name: src/style.css
+  visible: true
+  text: |+
+    .container {
+        display: flex;
+        flex-direction: column;
+        height: 700px;
+        width: 700px;
+        align-content: center;
+        align-items: center;
+        margin: auto;
+    }
+
+    #add-task-button {
+        background-color: blueviolet;
+        color: white;
+    }
+
+    #input-task {
+        border: none;
+        border-bottom: 2px solid blueviolet;
+    }
+
+    #task-list {
+        list-style: none;
+    }
+
+    .task {
+        padding: 10px;
+    }
+
+    input[type=checkbox]:checked + span {
+        text-decoration: line-through;
+    }
+
+  learner_created: true
+- name: src/script.js
+  visible: true
+  text: |-
+    let inputText = document.getElementById('input-task');
+    let addTaskButton = document.getElementById('add-task-button');
+    let list = document.querySelector('#task-list')
+
+    addTaskButton.addEventListener('click', (ev => {
+        if (inputText.value !== "") {
+
+            let newLi = document.createElement('li');
+            list.appendChild(newLi);
+
+            let newInput = document.createElement('input');
+            newInput.innerHTML;
+            newInput.setAttribute('type', 'checkbox');
+            newLi.appendChild(newInput);
+
+            let newSpan = document.createElement('span');
+            newSpan.className = 'task';
+            newSpan.innerHTML = inputText.value;
+            newLi.appendChild(newSpan);
+
+            let newButton = document.createElement('button');
+            newButton.className = 'delete-btn';
+            newButton.innerHTML = 'X';
+            newLi.appendChild(newButton);
+
+            inputText.value = '';
+
+            li = document.getElementsByClassName('delete-btn');
+            for (let i = 0; i < li.length; i++) {
+                li[i].addEventListener('click', function () {
+                    li[i].parentElement.remove();
+                })
+            }
+        }
+    }));
+  learner_created: true
 feedback_link: https://hyperskill.org/learn/step/13197#comment
-status: Unchecked
-record: -1
+status: Solved
+feedback:
+  message: Well done! You've finished the project. Select a new project on <a href="https://hyperskill.org/projects">JetBrains
+    Academy</a> to continue learning.
+  time: Tue, 27 Sep 2022 08:49:49 UTC
+record: 5

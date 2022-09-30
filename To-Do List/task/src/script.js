@@ -1,35 +1,75 @@
-let inputText = document.getElementById('input-task');
-let addTaskButton = document.getElementById('add-task-button');
-let list = document.querySelector('#task-list')
+document.getElementById("add-task-button")
+    .addEventListener("click", function () {
+            let taskList = document.getElementById("task-list");
+            let newTaskName = document.getElementById("input-task").value;
 
-addTaskButton.addEventListener('click', (ev => {
-    if (inputText.value !== "") {
+            let li = document.createElement("li");
+            li.innerHTML = getLiInnerHtml(newTaskName, false);
+            taskList.appendChild(li);
 
-        let newLi = document.createElement('li');
-        list.appendChild(newLi);
+            let tasks = loadTasks();
+            let task = {
+                name: newTaskName,
+                checked: false
+            }
+            tasks.push(task);
+            storeTasks(tasks);
+        }
+    );
 
-        let newInput = document.createElement('input');
-        newInput.innerHTML;
-        newInput.setAttribute('type', 'checkbox');
-        newLi.appendChild(newInput);
+function getLiInnerHtml(taskName, checked) {
+    let text = "";
+    if (checked === true) {
+        text += '   <input type="checkbox" onclick="changeText(this, \'' + taskName.trim() + '\');" checked=' + checked + '>';
+    } else {
+        text += '   <input type="checkbox" onclick="changeText(this, \'' + taskName.trim() + '\');">';
+    }
+    return text +
+        '   <span class="task">' + taskName + '</span>' +
+        '   <button class="delete-btn" onClick="removeTask(this, \'' + taskName.trim() + '\')">+</button>';
+}
 
-        let newSpan = document.createElement('span');
-        newSpan.className = 'task';
-        newSpan.innerHTML = inputText.value;
-        newLi.appendChild(newSpan);
+function removeTask(deleteBtn, taskName) {
+    let tasks = loadTasks();
+    tasks = tasks.filter(function (value, index, arr) {
+        return value.name !== taskName;
+    });
+    storeTasks(tasks);
+    deleteBtn.parentNode.remove();
+}
 
-        let newButton = document.createElement('button');
-        newButton.className = 'delete-btn';
-        newButton.innerHTML = 'X';
-        newLi.appendChild(newButton);
-
-        inputText.value = '';
-
-        li = document.getElementsByClassName('delete-btn');
-        for (let i = 0; i < li.length; i++) {
-            li[i].addEventListener('click', function () {
-                li[i].parentElement.remove();
-            })
+function changeText(checkBoxObj, taskName) {
+    let tasks = loadTasks();
+    for (const task of tasks) {
+        if (task.name === taskName) {
+            task.checked = checkBoxObj.checked;
         }
     }
-}));
+    storeTasks(tasks);
+    if (checkBoxObj.checked) {
+        checkBoxObj.parentNode.getElementsByTagName("span")[0].classList.add("line-through-task");
+    } else {
+        checkBoxObj.parentNode.getElementsByTagName("span")[0].classList.remove("line-through-task");
+    }
+}
+
+function storeTasks(taskList) {
+    localStorage.setItem("tasks", JSON.stringify(taskList))
+}
+
+function loadTasks() {
+    return JSON.parse(localStorage.getItem("tasks")) || [];
+}
+
+function initializeTasks() {
+    let tasks = loadTasks();
+    let taskListUl = document.getElementById("task-list");
+
+    for (let i = 0; i < tasks.length; i++) {
+        let name = tasks[i].name;
+        let li = document.createElement("li");
+        li.innerHTML = getLiInnerHtml(name, tasks[i].checked);
+        taskListUl.appendChild(li);
+    }
+}
+
